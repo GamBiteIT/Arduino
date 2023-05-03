@@ -7,11 +7,14 @@
 #include "DHTesp.h"
 
 const int DHT_PIN = 5;
+const int FAN_PIN = 4;
 
 DHTesp dhtSensor;
 
 void setup() {
+  pinMode(LED_PIN, OUTPUT);
   Serial.begin(9600);
+
   dhtSensor.setup(DHT_PIN, DHTesp::DHT11);
 }
 
@@ -20,5 +23,5 @@ void loop() {
   Serial.println("Temp: " + String(data.temperature, 2) + "°C");
   Serial.println("Humidity: " + String(data.humidity, 1) + "%");
   Serial.println("---");
-  delay(1000);
+  delay(10000);
 }

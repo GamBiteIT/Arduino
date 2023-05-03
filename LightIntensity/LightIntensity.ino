@@ -1,18 +1,12 @@
-#include <Wire.h>
-#include <BH1750.h>
-
-BH1750 lightMeter;
+const int LDR_PIN = D1;
 
 void setup() {
-  Serial.begin(115200);
-  Wire.begin();
-  lightMeter.begin();
+  Serial.begin(9600);
 }
 
 void loop() {
-  float lux = lightMeter.readLightLevel();
-  Serial.print("Light intensity: ");
-  Serial.print(lux);
-  Serial.println(" lux");
+  int ldrValue = digitalRead(LDR_PIN);
+  Serial.print("LDR voltage: ");
+  Serial.println(ldrValue);
   delay(1000);
 }
