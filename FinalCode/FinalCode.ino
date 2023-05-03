@@ -3,7 +3,7 @@
 #include <BH1750.h>
 const int soilMoisturePin = A0;
 const int DHT_PIN = D0;
-const int FAN_PIN = D3;
+const int FAN_PIN = D7;
 const int LED_PIN = D6;
 const int LED_RAI_PIN  = D5; 
 
