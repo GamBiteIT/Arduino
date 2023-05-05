@@ -1,11 +1,18 @@
 #include "DHTesp.h"
 #include <Wire.h>
 #include <BH1750.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
+#include <ArduinoJson.h>
+
 const int soilMoisturePin = A0;
 const int DHT_PIN = D0;
 const int FAN_PIN = D7;
 const int LED_PIN = D6;
 const int LED_RAI_PIN  = D5; 
+const char* ssid = "D-Link0909";
+const char* password = "ghaz1234";
+const char* serverName = "http://192.168.1.4:8000/api/data";
 
 
 DHTesp dhtSensor;
@@ -18,9 +25,13 @@ void setup() {
   pinMode(LED_RAI_PIN, OUTPUT);
   pinMode(FAN_PIN, OUTPUT);
   dhtSensor.setup(DHT_PIN, DHTesp::DHT11);
-  
   Wire.begin();
   lightMeter.begin();
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Connecting to WiFi...");
+  }
   
 }
 
@@ -29,6 +40,7 @@ void setup() {
 
 
 void loop() {
+
   uint16_t lux = lightMeter.readLightLevel();
   Serial.print("Light: ");
   Serial.print(lux);
@@ -59,5 +71,37 @@ if (soilMoistureValue > 550) {  // Check if soil moisture value is greater than 
   }else{
     digitalWrite(LED_PIN,LOW); 
   }
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+    WiFiClient client;
+    DynamicJsonDocument jsonDoc(1024);
+
+    jsonDoc["temperature"] = data.temperature;
+    jsonDoc["humidity"] = data.humidity;
+    jsonDoc["soil"] = soilMoistureValue;
+    jsonDoc["light"] = lux;
+
+
+    String json;
+    serializeJson(jsonDoc, json);
+
+    http.begin(client,serverName);
+    http.addHeader("Content-Type", "application/json");
+    int httpResponseCode = http.POST(json);
+
+    if (httpResponseCode > 0) {
+      String response = http.getString();
+      Serial.println(httpResponseCode);
+      Serial.println(response);
+    } else {
+      Serial.print("Error code: ");
+      Serial.println(httpResponseCode);
+    }
+
+    http.end();
+  } else {
+    Serial.println("WiFi not connected");
+  }
+  
   delay(10000);
 }

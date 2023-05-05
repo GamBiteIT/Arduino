@@ -25,7 +25,7 @@ void loop() {
     jsonDoc["temperature"] = 25.0;
     jsonDoc["humidity"] = 50.0;
     jsonDoc["soil"] = 250.0;
-    jsonDoc["light"] = 500.0;
+    jsonDoc["light"] = 70.0;
 
 
     String json;
@@ -49,5 +49,5 @@ void loop() {
     Serial.println("WiFi not connected");
   }
 
-  delay(5000);
+  delay(50000);
 }
