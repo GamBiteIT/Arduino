@@ -5,19 +5,25 @@
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
 
+
+
+
+
+
 const int soilMoisturePin = A0;
 const int DHT_PIN = D0;
 const int FAN_PIN = D7;
 const int LED_PIN = D6;
 const int LED_RAI_PIN  = D5; 
-const char* ssid = "AndroidAP";
-const char* password = "modamoda";
-const char* serverName = "http://192.168.43.48:8000/api/data";
-
-
+const char* ssid = "";
+const char* password = "";
+const char* serverName = "http://ip:8000/api/data";
 DHTesp dhtSensor;
-
 BH1750 lightMeter;
+
+
+
+
 
 void setup() {
   Serial.begin(9600);
