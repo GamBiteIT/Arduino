@@ -81,7 +81,7 @@ if (pres < 60  ) {  // Check if soil moisture value is greater than threshold
 
     jsonDoc["temperature"] = data.temperature;
     jsonDoc["humidity"] = data.humidity;
-    jsonDoc["soil"] = soilMoistureValue;
+    jsonDoc["soil"] = pres;
     jsonDoc["light"] = lux;
 
 
