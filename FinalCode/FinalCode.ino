@@ -58,18 +58,18 @@ void loop() {
   Serial.println("Temp: " + String(data.temperature, 2) + "°C");
   Serial.println("Humidity: " + String(data.humidity, 1) + "%");
   delay(1000);
-if (data.temperature>25 || data.humidity>40){
+if (data.temperature>28 || data.humidity>80){
   digitalWrite(FAN_PIN, HIGH);  // Turn on LED
   } else {
     digitalWrite(FAN_PIN, LOW);   // Turn off LED
   }
 
-if (soilMoistureValue > 550) {  // Check if soil moisture value is greater than threshold
+if (pres < 60  ) {  // Check if soil moisture value is greater than threshold
     digitalWrite(LED_RAI_PIN, HIGH);  // Turn on LED
   } else {
     digitalWrite(LED_RAI_PIN, LOW);   // Turn off LED
   }
-  if (lux < 50 ){
+  if (lux < 400 ){
     digitalWrite(LED_PIN,HIGH);
   }else{
     digitalWrite(LED_PIN,LOW); 
