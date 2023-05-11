@@ -10,9 +10,9 @@ const int DHT_PIN = D0;
 const int FAN_PIN = D7;
 const int LED_PIN = D6;
 const int LED_RAI_PIN  = D5; 
-const char* ssid = "D-Link0909";
-const char* password = "ghaz1234";
-const char* serverName = "http://192.168.1.4:8000/api/data";
+const char* ssid = "AndroidAP";
+const char* password = "modamoda";
+const char* serverName = "http://192.168.43.48:8000/api/data";
 
 
 DHTesp dhtSensor;
@@ -49,6 +49,9 @@ void loop() {
   int soilMoistureValue = analogRead(soilMoisturePin);
   Serial.print("Soil Moisture: ");
   Serial.println(soilMoistureValue);
+  int pres = map(soilMoistureValue,wet,dry,100,0);
+  Serial.print(pres);
+  Serial.println("%")
   delay(1000);
 
   TempAndHumidity  data = dhtSensor.getTempAndHumidity();

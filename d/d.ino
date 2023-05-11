@@ -22,10 +22,10 @@ void loop() {
     WiFiClient client;
     DynamicJsonDocument jsonDoc(1024);
 
-    jsonDoc["temperature"] = 25.0;
-    jsonDoc["humidity"] = 50.0;
-    jsonDoc["soil"] = 250.0;
-    jsonDoc["light"] = 70.0;
+    jsonDoc["temperature"] = 26.0;
+    jsonDoc["humidity"] = 30.0;
+    jsonDoc["soil"] = 150.0;
+    jsonDoc["light"] = 200.0;
 
 
     String json;
