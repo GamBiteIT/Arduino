@@ -1,46 +1,64 @@
-#include <ESP8266HTTPClient.h>
-#include <WiFiClient.h>
 #include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
+#include <ArduinoJson.h>
 
-const char* ssid = "D-Link0909";
-const char* password = "ghaz1234";
-const char* api_url = "http://192.168.1.4:8000/api/data";
+const char* ssid = "PhoneSaber";
+const char* password = "lollol1919";
+const char* serverName = "http://192.168.2.101:8000/api/parametre";
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   WiFi.begin(ssid, password);
-
-  Serial.print("Connecting to Wi-Fi");
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
-    Serial.print(".");
+    Serial.println("Connecting to WiFi...");
   }
-  Serial.println();
 }
 
 void loop() {
   if (WiFi.status() == WL_CONNECTED) {
-    WiFiClient client;
     HTTPClient http;
+    WiFiClient client;
+    DynamicJsonDocument jsonDoc(1024);
 
-    // Build JSON data
-    String json_data = "{\"temperature\": 25.6, \"humidity\": 60.2,\"\",}";
-
-    // Send HTTP POST request
-    http.begin(client, api_url);
+    http.begin(client, serverName);
     http.addHeader("Content-Type", "application/json");
-    int httpCode = http.POST(json_data);
-    
-    // Check response
-    if (httpCode > 0) {
+    int httpResponseCode = http.GET();
+
+    if (httpResponseCode > 0) {
       String response = http.getString();
-      Serial.println(response);
+      Serial.println("HTTP Response code: " + String(httpResponseCode));
+      Serial.println("Response: " + response);
+
+      DeserializationError error = deserializeJson(jsonDoc, response);
+
+      if (error) {
+        Serial.print("JSON parsing failed: ");
+        Serial.println(error.c_str());
+      } else {
+        // Extract data from JSON
+        float temperature = jsonDoc["TemperatureValeur"];
+        float humidity = jsonDoc["HumidityValeur"];
+        float soil = jsonDoc["SoilValeur"];
+        float light = jsonDoc["LightValeur"];
+
+
+        Serial.print("Temperature: ");
+        Serial.println(temperature);
+         Serial.println(humidity);
+          Serial.println(soil);
+           Serial.println(light);
+   
+      }
     } else {
-      Serial.printf("[HTTP] POST request failed, error: %s\n", http.errorToString(httpCode).c_str());
+      Serial.print("Error code: ");
+      Serial.println(httpResponseCode);
     }
-    
+
     http.end();
+  } else {
+    Serial.println("WiFi not connected");
   }
-  
-  delay(5000);
+
+  delay(10000);
 }
