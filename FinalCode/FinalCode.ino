@@ -121,22 +121,21 @@ if (data.temperature>temperatureValeur || data.humidity>humidityValeur){
   } else {
     digitalWrite(FAN_PIN, LOW);   // Turn off LED
     fanstatus = 0;
-  }
-
-if (perc < soilValeur  ) {  // Check if soil moisture value is greater than threshold
+    if (perc < soilValeur  ) {  // Check if soil moisture value is greater than threshold
     digitalWrite(LED_RAI_PIN, HIGH);  // Turn on LED
     pumpstatus = 1;
   } else {
     digitalWrite(LED_RAI_PIN, LOW);   // Turn off LED
     pumpstatus = 0;
-  }
-  if (lux < lightValeur ){
+      if (lux < lightValeur ){
     digitalWrite(LED_PIN,HIGH);
     ledstatus = 1;
   }else{
     digitalWrite(LED_PIN,LOW); 
     ledstatus = 0;
   }
+ }
+}
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
     WiFiClient client;
