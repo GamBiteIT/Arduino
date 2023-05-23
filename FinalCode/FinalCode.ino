@@ -61,6 +61,7 @@ void setup() {
 
 
 void loop() {
+  // Get Parametre.   
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
     WiFiClient client;
@@ -99,43 +100,59 @@ void loop() {
     Serial.println("WiFi not connected");
   }
 
+
+  /////.  READ DATA FROM SENSORS
+
   uint16_t lux = lightMeter.readLightLevel();
+  float light_percentage;
+  light_percentage = ((float)((lux*100)/4096));
   Serial.print("Light: ");
-  Serial.print(lux);
-  Serial.println(" lx");
+  Serial.print(light_percentage);
+  Serial.println(" %");
   delay(1000);
   int soilMoistureValue = analogRead(soilMoisturePin);
-  int perc = map(soilMoistureValue,650,0,0,100);
+ float moisture_percentage;
+  moisture_percentage = ( 100 - ( (soilMoistureValue/4096.00) * 100 ) );
   Serial.print("Soil Moisture: ");
-  Serial.println(perc);
+  Serial.print(moisture_percentage);
+ 
   delay(1000);
 
   TempAndHumidity  data = dhtSensor.getTempAndHumidity();
   Serial.println("Temp: " + String(data.temperature, 2) + "°C");
   Serial.println("Humidity: " + String(data.humidity, 1) + "%");
   delay(1000);
+
+
+
+  ////.  Test Sensor Data With the parametre from server
 if (data.temperature>temperatureValeur || data.humidity>humidityValeur){
-  digitalWrite(FAN_PIN, HIGH); 
+  digitalWrite(FAN_PIN, HIGH); // Turn ON FAN
   fanstatus = 1;
    // Turn on LED
   } else {
-    digitalWrite(FAN_PIN, LOW);   // Turn off LED
+    digitalWrite(FAN_PIN, LOW);   // Turn off FAN
     fanstatus = 0;
-    if (perc < soilValeur  ) {  // Check if soil moisture value is greater than threshold
-    digitalWrite(LED_RAI_PIN, HIGH);  // Turn on LED
+  }
+
+    if (perc < soilValeur  ) {  
+    digitalWrite(LED_RAI_PIN, HIGH);  // Turn on PUMP
     pumpstatus = 1;
   } else {
-    digitalWrite(LED_RAI_PIN, LOW);   // Turn off LED
-    pumpstatus = 0;
-      if (lux < lightValeur ){
-    digitalWrite(LED_PIN,HIGH);
+    digitalWrite(LED_RAI_PIN, LOW);   // Turn off PUMP
+    pumpstatus = 0;}
+     
+
+   if (lux < lightValeur ){
+    digitalWrite(LED_PIN,HIGH);   // Turn ON LED
     ledstatus = 1;
   }else{
-    digitalWrite(LED_PIN,LOW); 
+    digitalWrite(LED_PIN,LOW); // Turn off LED
     ledstatus = 0;
   }
- }
-}
+ 
+ /// SEND DATA TO SERVER TO SHOW IT ON DASHBOARD
+
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
     WiFiClient client;
@@ -144,7 +161,7 @@ if (data.temperature>temperatureValeur || data.humidity>humidityValeur){
     jsonDoc["season_id"] = season_id;
     jsonDoc["temperature"] = data.temperature;
     jsonDoc["humidity"] = data.humidity;
-    jsonDoc["soil"] = perc;
+    jsonDoc["soil"] = soilMoistureValue;
     jsonDoc["light"] = lux;
 
 
