@@ -15,17 +15,17 @@ const int DHT_PIN = D0;
 const int FAN_PIN = D7;
 const int LED_PIN = D6;
 const int LED_RAI_PIN  = D5; 
-const char* ssid = "Edimax";
-const char* password = "lollol1919";
-const char* serverName = "http://192.168.2.100:8000/api/data";
-const char* parametreApi = "http://192.168.2.100:8000/api/parametre";
-const char* DeviceApi = "http://192.168.2.100:8000/api/device";
+const char* ssid = "OPPO Reno8 T";
+const char* password = "12345678";
+const char* serverName = "http://192.168.98.164:8000/api/data";
+const char* parametreApi = "http://192.168.98.164:8000/api/parametre";
+const char* DeviceApi = "http://192.168.98.164:8000/api/device";
 float temperatureValeur;
 float humidityValeur;
 float soilValeur;
 float lightValeur;
 int season_id ;
-String status;
+
 int fanstatus = 0;
 int pumpstatus = 0;
 int ledstatus = 0;
@@ -135,7 +135,7 @@ if (data.temperature>temperatureValeur || data.humidity>humidityValeur){
     fanstatus = 0;
   }
 
-    if (perc < soilValeur  ) {  
+    if (soilMoistureValue < soilValeur  ) {  
     digitalWrite(LED_RAI_PIN, HIGH);  // Turn on PUMP
     pumpstatus = 1;
   } else {
@@ -183,8 +183,10 @@ if (data.temperature>temperatureValeur || data.humidity>humidityValeur){
     
 
     http.end();
-    jsonDoc["ids"] = "1,2,3";
-    jsonDoc["works"]= String(fanstatus)+","+String(pumpstatus)+","+String(ledstatus);
+    jsonDoc["season_id"] = season_id;
+    jsonDoc["fan"]= fanstatus;
+    jsonDoc["pump"]= pumpstatus;
+    jsonDoc["led"]= ledstatus;
     String jsonStatus;
     serializeJson(jsonDoc, jsonStatus);
 
